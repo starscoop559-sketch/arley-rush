@@ -2,226 +2,911 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>ARLEY RUSH - Ultimate</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>ARLEY RUSH</title>
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;color:#fff;font-family:Arial, sans-serif;overflow:hidden;touch-action:none}
-#ui{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:10px;z-index:10}
-.badge{background:rgba(0,0,0,0.7);border:2px solid #00e5ff;border-radius:24px;padding:7px 16px;font-weight:900;font-size:13px;color:#ffe45c;box-shadow:0 0 15px #00e5ff55}
-canvas{display:block;margin:44px auto 0 auto;background:#020a12}
-#menu{position:fixed;inset:0;background:radial-gradient(ellipse at center,#0f2535 0%,#000 80%);display:flex;align-items:center;justify-content:center;z-index:20}
-.card{background:rgba(14,24,36,0.96);border:2px solid #00e5ff;border-radius:28px;padding:20px;text-align:center;width:92%;max-width:360px;box-shadow:0 0 60px #00e5ff66}
-.logo{width:165px;height:165px;border-radius:50%;display:block;margin:0 auto 10px auto;box-shadow:0 0 30px #00e5ff,0 0 60px #ffe45c44;object-fit:cover;background:#001a22}
-h1{color:#ffe45c;font-size:28px;letter-spacing:5px;text-shadow:0 0 12px #ffe45c}
-h1 span{color:#00e5ff;text-shadow:0 0 12px #00e5ff}
-.sub{color:#7ecbff;font-size:10px;letter-spacing:3px;margin:8px 0}
-.btn{background:linear-gradient(90deg,#ffe45c,#ff9d00);color:#000;border:0;border-radius:32px;padding:15px;width:100%;font-weight:900;font-size:19px;letter-spacing:1px;box-shadow:0 0 25px #ffe45c88}
-.how{color:#5a7a8a;font-size:11px;margin-top:10px;line-height:1.4}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#020508;
+  font-family:Arial,sans-serif;
+  touch-action:none;
+}
+
+canvas{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:420px;
+  margin:auto;
+  background:#050a0e;
+}
+
+#hud{
+  position:fixed;
+  top:10px;
+  left:10px;
+  right:10px;
+  max-width:400px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  z-index:5;
+  pointer-events:none;
+}
+
+.pill{
+  background:rgba(2,7,11,.88);
+  border:1px solid rgba(255,215,0,.7);
+  border-radius:18px;
+  padding:7px 11px;
+  color:white;
+  font-size:11px;
+  font-weight:900;
+}
+
+.gold{color:#ffd700}
+.blue{color:#00e5ff}
+.red{color:#ff3948}
+
+#menu{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:radial-gradient(circle at center,#162b38,#020508 70%);
+  z-index:20;
+  padding:20px;
+}
+
+.box{
+  width:min(340px,92%);
+  padding:25px;
+  text-align:center;
+  border:1px solid #8f7700;
+  border-radius:25px;
+  background:#071019;
+}
+
+.logo{
+  width:85px;
+  height:85px;
+  margin:auto auto 14px;
+  border-radius:50%;
+  border:2px solid #ffd700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#ffd700;
+  font-size:27px;
+  font-weight:1000;
+  background:radial-gradient(circle,#243844,#030608 70%);
+}
+
+h1{
+  color:#ffd700;
+  letter-spacing:4px;
+  font-size:28px;
+}
+
+h1 span{
+  color:#00e5ff;
+}
+
+.sub{
+  color:#00e5ff;
+  font-size:9px;
+  letter-spacing:3px;
+  margin:7px 0 18px;
+}
+
+button{
+  width:100%;
+  border:0;
+  border-radius:30px;
+  padding:15px;
+  background:#ffd000;
+  color:#080808;
+  font-weight:1000;
+  font-size:17px;
+}
+
+.info{
+  color:#71838e;
+  font-size:10px;
+  line-height:1.6;
+  margin-top:12px;
+}
 </style>
 </head>
+
 <body>
-<div id="ui">
-<div class="badge">🏁 <span id="dist">0</span>m</div>
-<div class="badge">💰 <span id="coins">0</span> • <span id="speed">0</span> KMH</div>
+
+<div id="hud">
+  <div class="pill">
+    🏁 <span class="gold" id="distance">0</span>m
+  </div>
+
+  <div class="pill">
+    💰 <span class="gold" id="coins">0</span>
+    &nbsp; ⚡ <span class="blue" id="speed">0</span>
+  </div>
 </div>
-<canvas id="c" width="360" height="680"></canvas>
+
+<canvas id="game"></canvas>
 
 <div id="menu">
-<div class="card">
-<img class="logo" src="https://i.imgur.com/8Km9tLL.png" onerror="this.src='https://via.placeholder.com/165/001a22/00e5ff?text=AR'">
-<h1>ARLEY <span>RUSH</span></h1>
-<div class="sub">ULTIMATE EDITION • NFS x BLUR</div>
-<button class="btn" id="playBtn">🏁 PLAY NOW</button>
-<div class="how">Swipe left/right to dodge<br>Collect gold • Feel the blur<br>Not on Telegram yet - Exclusive</div>
-</div>
+  <div class="box">
+    <div class="logo">AR</div>
+
+    <h1>ARLEY <span>RUSH</span></h1>
+
+    <div class="sub">STREET RACING</div>
+
+    <button id="play">🏁 START RACE</button>
+
+    <div class="info">
+      SWIPE LEFT / RIGHT TO STEER<br>
+      Collect coins • Dodge traffic • Build your combo
+    </div>
+  </div>
 </div>
 
 <script>
-const cv = document.getElementById('c');
-const ctx = cv.getContext('2d');
-const W = 360, H = 680;
-const lanesX = [50, 170, 290];
-let player = {lane:1, x:170, y:540, tx:170};
-let obstacles = [];
-let coinList = [];
-let particles = [];
-let distance = 0;
-let coinCount = 0;
-let gameSpeed = 8;
-let frame = 0;
-let running = false;
-let nitro = 0;
 
-function drawArCar(x,y,isPlayer,blur){
-  ctx.save();
-  ctx.translate(x+20, y+35);
-  if(blur>0 && isPlayer){
-    ctx.globalAlpha = 0.25;
-    ctx.fillStyle = '#00e5ff';
-    ctx.beginPath();
-    ctx.ellipse(-blur*1.5, 2, 22, 36, 0, 0, Math.PI*2);
-    ctx.fill();
-    ctx.globalAlpha = 1;
-  }
-  ctx.shadowColor = isPlayer? '#00e5ff' : '#ff3a3a';
-  ctx.shadowBlur = isPlayer? 22 : 14;
-  ctx.strokeStyle = isPlayer? '#7defff' : '#ff7a7a';
-  ctx.lineWidth = 2.6;
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d",{alpha:false});
+
+let W=390;
+let H=760;
+let scale=1;
+
+function resize(){
+
+  const dpr=Math.min(window.devicePixelRatio||1,1.5);
+
+  W=Math.min(window.innerWidth,420);
+  H=window.innerHeight;
+
+  canvas.width=Math.floor(W*dpr);
+  canvas.height=Math.floor(H*dpr);
+
+  canvas.style.width=W+"px";
+  canvas.style.height=H+"px";
+
+  scale=dpr;
+
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+
+resize();
+window.addEventListener("resize",resize);
+
+
+/* GAME STATE */
+
+const lanes=[0,1,2];
+
+let player={
+  lane:1,
+  x:1,
+  y:0
+};
+
+let traffic=[];
+let coins=[];
+let particles=[];
+
+let running=false;
+let frame=0;
+
+let distance=0;
+let money=0;
+let speed=7;
+
+let combo=1;
+let comboTimer=0;
+
+let nitro=0;
+let lives=3;
+
+let best=Number(localStorage.getItem("arleyRushBest")||0);
+
+
+/* HELPERS */
+
+function laneX(lane,y){
+
+  const horizon=H*0.28;
+
+  const roadBottom=W*0.86;
+  const roadTop=W*0.26;
+
+  const p=Math.max(0,Math.min(1,(y-horizon)/(H-horizon)));
+
+  const roadWidth=roadTop+(roadBottom-roadTop)*p;
+
+  return W/2+(lane-1)*(roadWidth/3);
+}
+
+
+function roundedRect(x,y,w,h,r){
+
   ctx.beginPath();
-  ctx.moveTo(-19,-33); ctx.lineTo(-19,29); ctx.lineTo(-12,34); ctx.lineTo(12,34); ctx.lineTo(19,29); ctx.lineTo(19,-33); ctx.lineTo(12,-37); ctx.lineTo(-12,-37);
-  ctx.closePath(); ctx.stroke();
-  ctx.shadowBlur = 0;
-  ctx.fillStyle = '#05131c';
-  ctx.beginPath();
-  ctx.ellipse(0, 0, 15, 19, 0, 0, Math.PI*2);
-  ctx.fill();
-  ctx.strokeStyle = isPlayer? '#00e5ff' : '#555';
-  ctx.lineWidth = 1.4;
-  ctx.stroke();
-  if(isPlayer){
-    ctx.fillStyle = '#ffe45c';
-    ctx.font = '900 15px Arial';
-    ctx.textAlign = 'center';
-    ctx.shadowColor = '#ffe45c';
-    ctx.shadowBlur = 12;
-    ctx.fillText('AR', 0, 6);
-    ctx.shadowBlur = 0;
-  }
-  ctx.fillStyle = isPlayer? '#aaffff' : '#ffaaaa';
-  ctx.beginPath(); ctx.arc(-11.5,-33,3.5,0,Math.PI*2); ctx.arc(11.5,-33,3.5,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#ff1a1a';
-  ctx.shadowColor = '#ff0000'; ctx.shadowBlur = 10;
-  ctx.fillRect(-16,28,6,5); ctx.fillRect(10,28,6,5);
-  ctx.shadowBlur = 0;
-  ctx.restore();
+  ctx.roundRect(x,y,w,h,r);
 }
 
-function drawCoin(x,y){
-  ctx.save();
-  ctx.translate(x,y);
-  ctx.shadowColor = '#ffe45c'; ctx.shadowBlur = 16;
-  ctx.fillStyle = '#ffde59';
-  ctx.beginPath(); ctx.arc(0,0,11,0,Math.PI*2); ctx.fill();
-  ctx.shadowBlur = 0;
-  ctx.strokeStyle = '#8a6d00'; ctx.lineWidth = 1.2; ctx.stroke();
-  ctx.fillStyle = '#000'; ctx.font = '900 12px Arial'; ctx.textAlign = 'center';
-  ctx.fillText('$',0,4.5);
-  ctx.restore();
-}
 
-function resetGame(){
-  obstacles = []; coinList = []; particles = [];
-  distance = 0; coinCount = 0; gameSpeed = 8; frame = 0; nitro = 0;
-  player.lane = 1; player.x = lanesX[1]; player.tx = lanesX[1];
-}
+/* ROAD */
 
-function startGame(){
-  resetGame();
-  document.getElementById('menu').style.display = 'none';
-  running = true;
-  requestAnimationFrame(gameLoop);
-}
+function drawRoad(){
 
-function gameOver(){
-  running = false;
-  document.getElementById('menu').style.display = 'flex';
-  document.querySelector('.card h1').innerHTML = 'WRECKED!';
-  document.querySelector('.sub').innerText = Math.floor(distance)+'m • '+coinCount+' coins collected';
-  document.getElementById('playBtn').innerText = '🔁 TRY AGAIN';
-}
-
-function gameLoop(){
-  if(!running) return;
-  requestAnimationFrame(gameLoop);
-  frame++;
-  distance += gameSpeed * 0.11;
-  if(frame % 120 === 0) gameSpeed = Math.min(22, gameSpeed + 0.3);
-  if(nitro > 0) nitro--;
-
-  let currentSpeed = nitro > 0? gameSpeed + 8 : gameSpeed;
-  let blur = nitro > 0? 6 : Math.max(0, (gameSpeed-12)/2);
-
-  ctx.fillStyle = 'rgba(2,10,18,0.85)';
+  ctx.fillStyle="#061018";
   ctx.fillRect(0,0,W,H);
 
-  ctx.strokeStyle = 'rgba(0,229,255,0.18)';
-  ctx.lineWidth = 2;
-  ctx.setLineDash([26,26]);
+  /* sky */
+
+  const sky=ctx.createLinearGradient(0,0,0,H*.35);
+
+  sky.addColorStop(0,"#02060a");
+  sky.addColorStop(1,"#17303d");
+
+  ctx.fillStyle=sky;
+  ctx.fillRect(0,0,W,H*.35);
+
+
+  /* distant lights */
+
+  ctx.fillStyle="#b9d5df";
+
+  for(let i=0;i<9;i++){
+
+    const y=H*.17+i*13;
+
+    ctx.fillRect(20+i*8,y,2,2);
+    ctx.fillRect(W-20-i*8,y,2,2);
+  }
+
+
+  /* road */
+
+  ctx.fillStyle="#111a20";
+
   ctx.beginPath();
-  ctx.moveTo(120,0); ctx.lineTo(120,H);
-  ctx.moveTo(240,0); ctx.lineTo(240,H);
+
+  ctx.moveTo(W*.37,H*.28);
+  ctx.lineTo(W*.63,H*.28);
+  ctx.lineTo(W*.93,H);
+  ctx.lineTo(W*.07,H);
+
+  ctx.closePath();
+  ctx.fill();
+
+
+  /* road edges */
+
+  ctx.strokeStyle="rgba(255,215,0,.45)";
+  ctx.lineWidth=2;
+
+  ctx.beginPath();
+
+  ctx.moveTo(W*.37,H*.28);
+  ctx.lineTo(W*.07,H);
+
+  ctx.moveTo(W*.63,H*.28);
+  ctx.lineTo(W*.93,H);
+
   ctx.stroke();
-  ctx.setLineDash([]);
 
-  ctx.fillStyle = 'rgba(255,255,255,0.16)';
-  for(let i=0;i<H;i+=44){
-    let yy = (i + frame * currentSpeed * 1.3) % H;
-    ctx.fillRect(178, yy, 3, 18);
-  }
 
-  player.x += (player.tx - player.x) * 0.24;
-  drawArCar(player.x, player.y, true, blur);
+  /* lane markers */
 
-  if(frame % Math.max(14, 45 - Math.floor(gameSpeed)) === 0){
-    let ln = Math.floor(Math.random()*3);
-    obstacles.push({lane:ln, x:lanesX[ln], y:-100});
-  }
-  for(let i=obstacles.length-1;i>=0;i--){
-    let o = obstacles[i];
-    o.y += currentSpeed;
-    drawArCar(o.x, o.y, false, 0);
-    if(o.y > H+50){ obstacles.splice(i,1); continue; }
-    if(o.y+62 > player.y && o.y < player.y+60 && o.lane === player.lane){
-      return gameOver();
-    }
-  }
+  const offset=(frame*speed*1.5)%65;
 
-  if(frame % 28 === 0){
-    let ln = Math.floor(Math.random()*3);
-    coinList.push({x:lanesX[ln]+20, y:-20});
-  }
-  for(let i=coinList.length-1;i>=0;i--){
-    let c = coinList[i];
-    c.y += currentSpeed;
-    drawCoin(c.x, c.y);
-    if(c.y > H+30){ coinList.splice(i,1); continue; }
-    if(Math.abs(c.x-(player.x+20)) < 24 && Math.abs(c.y-(player.y+35)) < 38){
-      coinList.splice(i,1);
-      coinCount++;
-      if(coinCount % 5 === 0) nitro = 90;
-      for(let k=0;k<5;k++) particles.push({x:c.x, y:c.y, vx:(Math.random()-0.5)*5, vy:(Math.random()-0.5)*5, life:18});
-    }
-  }
+  ctx.fillStyle="rgba(210,225,230,.55)";
 
-  for(let i=particles.length-1;i>=0;i--){
-    let p = particles[i];
-    p.x += p.vx; p.y += p.vy; p.life--;
-    ctx.fillStyle = '#ffe45c';
-    ctx.fillRect(p.x, p.y, 3, 3);
-    if(p.life <= 0) particles.splice(i,1);
-  }
+  for(let y=-65+offset;y<H;y+=65){
 
-  document.getElementById('dist').innerText = Math.floor(distance);
-  document.getElementById('coins').innerText = coinCount;
-  document.getElementById('speed').innerText = Math.floor(currentSpeed*14);
+    const p=Math.max(0,(y-H*.28)/(H*.72));
+
+    const width=W*(.26+.60*p);
+
+    const left=W/2-width/2;
+
+    ctx.fillRect(left+width/3,y,3,28);
+    ctx.fillRect(left+width*2/3,y,3,28);
+  }
 }
 
-let startX = 0;
-cv.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive:true});
-cv.addEventListener('touchend', e => {
-  let dx = e.changedTouches[0].clientX - startX;
-  if(dx > 30 && player.lane < 2){ player.lane++; player.tx = lanesX[player.lane]; }
-  if(dx < -30 && player.lane > 0){ player.lane--; player.tx = lanesX[player.lane]; }
-}, {passive:true});
 
-document.getElementById('playBtn').addEventListener('click', startGame);
-cv.addEventListener('click', e => {
-  let rect = cv.getBoundingClientRect();
-  let x = e.clientX - rect.left;
-  if(x < 120 && player.lane > 0){ player.lane--; player.tx = lanesX[player.lane]; }
-  else if(x > 240 && player.lane < 2){ player.lane++; player.tx = lanesX[player.lane]; }
-});
+/* REALISTIC LIGHTWEIGHT CAR */
+
+function drawCar(cx,cy,s,playerCar){
+
+  ctx.save();
+
+  ctx.translate(cx,cy);
+  ctx.scale(s,s);
+
+
+  /* shadow */
+
+  ctx.fillStyle="rgba(0,0,0,.55)";
+
+  ctx.beginPath();
+  ctx.ellipse(0,38,30,8,0,0,Math.PI*2);
+  ctx.fill();
+
+
+  /* wheels */
+
+  ctx.fillStyle="#030405";
+
+  ctx.beginPath();
+  ctx.ellipse(-24,22,7,15,0,0,Math.PI*2);
+  ctx.ellipse(24,22,7,15,0,0,Math.PI*2);
+  ctx.fill();
+
+
+  /* body */
+
+  const body=ctx.createLinearGradient(-30,0,30,0);
+
+  if(playerCar){
+
+    body.addColorStop(0,"#765500");
+    body.addColorStop(.25,"#e6b800");
+    body.addColorStop(.5,"#fff0a0");
+    body.addColorStop(.72,"#dca900");
+    body.addColorStop(1,"#614500");
+
+  }else{
+
+    body.addColorStop(0,"#252c31");
+    body.addColorStop(.3,"#89949b");
+    body.addColorStop(.5,"#e2e7e9");
+    body.addColorStop(.75,"#626c72");
+    body.addColorStop(1,"#202529");
+  }
+
+  ctx.fillStyle=body;
+
+  ctx.beginPath();
+
+  ctx.moveTo(-26,38);
+  ctx.quadraticCurveTo(-31,22,-27,2);
+  ctx.lineTo(-22,-29);
+  ctx.quadraticCurveTo(-17,-46,0,-50);
+  ctx.quadraticCurveTo(17,-46,22,-29);
+  ctx.lineTo(27,2);
+  ctx.quadraticCurveTo(31,22,26,38);
+  ctx.quadraticCurveTo(0,47,-26,38);
+
+  ctx.closePath();
+  ctx.fill();
+
+
+  /* cockpit */
+
+  const glass=ctx.createLinearGradient(0,-45,0,-5);
+
+  glass.addColorStop(0,"#071017");
+  glass.addColorStop(.5,"#315361");
+  glass.addColorStop(1,"#081116");
+
+  ctx.fillStyle=glass;
+
+  ctx.beginPath();
+
+  ctx.moveTo(-17,-30);
+  ctx.quadraticCurveTo(0,-46,17,-30);
+  ctx.lineTo(13,-7);
+  ctx.quadraticCurveTo(0,-2,-13,-7);
+
+  ctx.closePath();
+  ctx.fill();
+
+
+  /* windshield reflection */
+
+  ctx.fillStyle="rgba(255,255,255,.22)";
+
+  ctx.beginPath();
+  ctx.moveTo(-13,-29);
+  ctx.lineTo(-5,-9);
+  ctx.lineTo(-9,-10);
+  ctx.closePath();
+  ctx.fill();
+
+
+  /* hood highlight */
+
+  ctx.fillStyle="rgba(255,255,255,.18)";
+
+  ctx.beginPath();
+  ctx.moveTo(-9,-5);
+  ctx.lineTo(-2,-8);
+  ctx.lineTo(-2,25);
+  ctx.lineTo(-10,20);
+
+  ctx.closePath();
+  ctx.fill();
+
+
+  /* headlights */
+
+  ctx.fillStyle="#eafcff";
+
+  roundedRect(-19,-35,12,5,2);
+  ctx.fill();
+
+  roundedRect(7,-35,12,5,2);
+  ctx.fill();
+
+
+  /* front grille */
+
+  ctx.fillStyle="#050708";
+
+  ctx.beginPath();
+
+  ctx.moveTo(-12,29);
+  ctx.quadraticCurveTo(0,37,12,29);
+  ctx.lineTo(8,35);
+  ctx.quadraticCurveTo(0,39,-8,35);
+
+  ctx.closePath();
+  ctx.fill();
+
+
+  /* side intakes */
+
+  ctx.fillStyle="#090c0e";
+
+  ctx.fillRect(-28,10,6,18);
+  ctx.fillRect(22,10,6,18);
+
+
+  if(playerCar){
+
+    ctx.fillStyle="#fff0a0";
+    ctx.font="bold 6px Arial";
+    ctx.textAlign="center";
+    ctx.fillText("ARLEY",0,20);
+
+  }else{
+
+    /* rear lights */
+
+    ctx.fillStyle="#ff2635";
+
+    ctx.fillRect(-19,31,10,4);
+    ctx.fillRect(9,31,10,4);
+  }
+
+
+  ctx.restore();
+}
+
+
+/* COIN */
+
+function drawCoin(cx,cy){
+
+  ctx.fillStyle="#ffd700";
+
+  ctx.beginPath();
+  ctx.arc(cx,cy,9,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle="#795900";
+
+  ctx.font="bold 11px Arial";
+  ctx.textAlign="center";
+
+  ctx.fillText("$",cx,cy+4);
+}
+
+
+/* RESET */
+
+function reset(){
+
+  traffic.length=0;
+  coins.length=0;
+  particles.length=0;
+
+  frame=0;
+  distance=0;
+  money=0;
+  speed=7;
+
+  combo=1;
+  comboTimer=0;
+
+  nitro=0;
+  lives=3;
+
+  player.lane=1;
+  player.x=1;
+
+}
+
+
+/* START */
+
+function start(){
+
+  reset();
+
+  document.getElementById("menu").style.display="none";
+
+  running=true;
+
+  requestAnimationFrame(loop);
+}
+
+
+/* GAME OVER */
+
+function gameOver(){
+
+  running=false;
+
+  if(distance>best){
+
+    best=Math.floor(distance);
+
+    localStorage.setItem("arleyRushBest",best);
+  }
+
+  const menu=document.getElementById("menu");
+
+  menu.style.display="flex";
+
+  menu.querySelector("h1").innerHTML=
+    'RACE <span>OVER</span>';
+
+  menu.querySelector(".sub").textContent=
+    Math.floor(distance)+"M  •  "+money+" COINS";
+
+  document.getElementById("play").textContent="🔁 RACE AGAIN";
+}
+
+
+/* SPAWN TRAFFIC */
+
+function spawnTraffic(){
+
+  if(traffic.length>=4)return;
+
+  const lane=Math.floor(Math.random()*3);
+
+  /* prevent immediate impossible overlap */
+
+  for(const car of traffic){
+
+    if(car.lane===lane && car.y<160)return;
+  }
+
+  traffic.push({
+    lane,
+    y:H*.25-100,
+    passed:false
+  });
+}
+
+
+/* SPAWN COIN */
+
+function spawnCoin(){
+
+  if(coins.length>=5)return;
+
+  const lane=Math.floor(Math.random()*3);
+
+  coins.push({
+    lane,
+    y:H*.25-30
+  });
+}
+
+
+/* MAIN LOOP */
+
+let lastTime=0;
+
+function loop(time){
+
+  if(!running)return;
+
+  requestAnimationFrame(loop);
+
+  if(!lastTime)lastTime=time;
+
+  const dt=Math.min((time-lastTime)/16.67,1.5);
+
+  lastTime=time;
+
+  frame++;
+
+  /* difficulty */
+
+  speed=Math.min(15,7+distance/1800);
+
+  if(nitro>0){
+
+    nitro--;
+
+  }
+
+
+  const currentSpeed=
+    speed+(nitro>0?7:0);
+
+
+  distance+=currentSpeed*.11*dt;
+
+
+  /* road */
+
+  drawRoad();
+
+
+  /* traffic spawn */
+
+  if(frame%Math.max(32,65-Math.floor(speed*2))===0){
+
+    spawnTraffic();
+  }
+
+
+  if(frame%42===0){
+
+    spawnCoin();
+  }
+
+
+  /* player movement */
+
+  const targetX=laneX(player.x,H*.82);
+
+  const playerCenter=targetX;
+
+  /* traffic */
+
+  for(let i=traffic.length-1;i>=0;i--){
+
+    const car=traffic[i];
+
+    car.y+=currentSpeed*dt*1.18;
+
+    const cx=laneX(car.lane,car.y);
+
+    const perspective=.62+
+      Math.max(0,Math.min(1,
+      (car.y-H*.28)/(H*.72)))*.38;
+
+    drawCar(cx,car.y,perspective,false);
+
+
+    /* collision */
+
+    if(
+      car.lane===player.lane &&
+      Math.abs(car.y-H*.82)<65
+    ){
+
+      lives--;
+
+      traffic.splice(i,1);
+
+      combo=1;
+
+      if(lives<=0){
+
+        gameOver();
+        return;
+      }
+    }
+
+
+    /* near miss */
+
+    if(
+      !car.passed &&
+      car.y>H*.82+55
+    ){
+
+      car.passed=true;
+
+      combo=Math.min(combo+1,5);
+      comboTimer=100;
+    }
+
+
+    if(car.y>H+100){
+
+      traffic.splice(i,1);
+    }
+  }
+
+
+  /* coins */
+
+  for(let i=coins.length-1;i>=0;i--){
+
+    const coin=coins[i];
+
+    coin.y+=currentSpeed*dt*1.2;
+
+    const cx=laneX(coin.lane,coin.y);
+
+    drawCoin(cx,coin.y);
+
+
+    if(
+      coin.lane===player.lane &&
+      Math.abs(coin.y-H*.82)<55
+    ){
+
+      money+=combo;
+
+      nitro=Math.min(nitro+20,100);
+
+      combo=Math.min(combo+1,5);
+
+      comboTimer=100;
+
+      coins.splice(i,1);
+
+      continue;
+    }
+
+
+    if(coin.y>H+50){
+
+      coins.splice(i,1);
+    }
+  }
+
+
+  /* combo timer */
+
+  if(comboTimer>0){
+
+    comboTimer--;
+
+  }else{
+
+    combo=1;
+  }
+
+
+  /* player */
+
+  drawCar(
+    playerCenter,
+    H*.82,
+    1.05,
+    true
+  );
+
+
+  /* HUD */
+
+  document.getElementById("distance").textContent=
+    Math.floor(distance);
+
+  document.getElementById("coins").textContent=
+    money;
+
+  document.getElementById("speed").textContent=
+    Math.floor(currentSpeed*18);
+
+
+  /* combo */
+
+  if(combo>1){
+
+    ctx.fillStyle="#ffd700";
+    ctx.font="900 18px Arial";
+    ctx.textAlign="center";
+
+    ctx.fillText(
+      "x"+combo+" COMBO",
+      W/2,
+      H*.15
+    );
+  }
+
+
+  /* nitro */
+
+  if(nitro>0){
+
+    ctx.fillStyle="#00e5ff";
+    ctx.font="900 12px Arial";
+    ctx.textAlign="center";
+
+    ctx.fillText(
+      "⚡ NITRO",
+      W/2,
+      H*.18
+    );
+  }
+
+
+  /* lives */
+
+  ctx.fillStyle="#ff3948";
+  ctx.font="bold 12px Arial";
+  ctx.textAlign="left";
+
+  ctx.fillText(
+    "♥".repeat(lives),
+    12,
+    H-18
+  );
+
+}
+
+
+/* SWIPE CONTROL */
+
+let startX=0;
+
+canvas.addEventListener(
+  "touchstart",
+  e=>{
+    startX=e.touches[0].clientX;
+  },
+  {passive:true}
+);
+
+
+canvas.addEventListener(
+  "touchend",
+  e=>{
+
+    if(!running)return;
+
+    const dx=
+      e.changedTouches[0].clientX-startX;
+
+    if(dx>35 && player.lane<2){
+
+      player.lane++;
+    }
+
+    if(dx<-35 && player.lane>0){
+
+      player.lane--;
+    }
+
+    player.x=player.lane;
+
+  },
+  {passive:true}
+);
+
+
+/* START BUTTON */
+
+document
+  .getElementById("play")
+  .addEventListener("click",start);
+
 </script>
+
 </body>
   </html>
